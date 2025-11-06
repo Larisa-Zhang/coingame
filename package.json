@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "konva": "^10.0.8",
+    "three": "^0.179.1"
+  },
+  "devDependencies": {
+    "vite": "^7.0.6"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}

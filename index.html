@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Coin Game</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      overflow: hidden;
+      background-color: #000;
+      color: white;
+    }
+    canvas { display: block; }
+
+    button {
+      padding: 10px 16px;
+      font-size: 16px;
+      background-color: #444;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    /* module containers */
+    #module-start, #module-main, #module-end {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 10;
+    }
+    
+    #module-start, #module-end {
+      background: radial-gradient(#333, #000);
+    }
+    
+    /* ✅ FIXED: module-main should be transparent and VISIBLE when active */
+    #module-main {
+      background: transparent;
+      /* Remove display:none - it will be controlled by switchModule() */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🟢 START / WELCOME MODULE -->
+  <div id="module-start" style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    <h1 style="font-size:2.2rem;">🪙 Welcome to the Coin Game</h1>
+    <p style="font-size:1.3rem; max-width:600px; text-align:center;">
+      You have <strong>60 seconds</strong> to collect as many coins as you can. Click on coins to earn points!
+    </p>
+    <input id="session-input" placeholder="Enter Participant ID (e.g., P001)"
+      style="margin-top:10px; padding:8px; width:300px; font-size:14px;" />
+    <button id="start-btn" style="margin-top:20px; font-size:1.2rem;">🚀 Start Game</button>
+  </div>
+
+  <!-- 🎮 MAIN GAME MODULE -->
+  <div id="module-main">
+    <!-- The Three.js renderer canvas will be added here -->
+  </div>
+
+  <!-- 🏁 END MODULE -->
+  <div id="module-end" style="display:none; flex-direction:column; align-items:center; justify-content:center;">
+    <h1>🎉 Game Over!</h1>
+    <p id="final-score" style="font-size:1.5rem;"></p>
+    <button id="restart-btn">Play Again</button>
+  </div>
+
+  <!-- 🔄 MODULE SWITCHING LOGIC -->
+  <script>
+    window.switchModule = function(name) {
+      console.log('Switching to module:', name);
+      document.getElementById('module-start').style.display = (name === 'start') ? 'flex' : 'none';
+      document.getElementById('module-main').style.display  = (name === 'main') ? 'block' : 'none';
+      document.getElementById('module-end').style.display   = (name === 'end') ? 'flex' : 'none';
+    };
+
+    // handle start button
+    document.addEventListener('DOMContentLoaded', () => {
+      switchModule('start');
+
+      document.getElementById('start-btn').addEventListener('click', () => {
+        const enteredId = (document.getElementById('session-input')?.value || '').trim();
+        if (enteredId) {
+          sessionStorage.setItem('sessionId', enteredId.toUpperCase()); // Changed to sessionStorage
+        }
+        
+        console.log('Start button clicked, switching to main...');
+        switchModule('main');
+        
+        // Wait a moment for module to render, then start game
+        setTimeout(() => {
+          if (window.startGame) {
+            window.startGame();
+          } else {
+            console.error('❌ startGame function not found!');
+          }
+        }, 100);
+      });
+
+      document.getElementById('restart-btn').addEventListener('click', () => {
+        window.location.reload();
+      });
+    });
+  </script>
+
+  <!-- 🧩 MAIN THREE.JS SCRIPT -->
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
